@@ -9,6 +9,8 @@ import fileio.CardInput;
 import fileio.Input;
 import fileio.GameInput;
 import fileio.DecksInput;
+import lombok.Getter;
+import lombok.Setter;
 
 //import Tank;
 
@@ -22,12 +24,15 @@ public class Player {
     private ArrayList<Minion> handCards;
     private Hero hero;
     private int availableMana;
+    private int idx;
 
     public Player(int player, DecksInput decks, int index, GameInput currentGame) {
         if(player == 1) {
             this.hero = genHero(currentGame.getStartGame().getPlayerOneHero());
+            this.idx = 1;
         } else {
             this.hero = genHero(currentGame.getStartGame().getPlayerTwoHero());
+            this.idx = 2;
         }
         if(this.hero == null){
             System.out.println("sa mi bag");
@@ -145,5 +150,13 @@ public class Player {
 
     public void setHero(Hero hero) {
         this.hero = hero;
+    }
+
+    public Hero getHeroCopy() {
+        return new Hero(this.hero);
+    }
+
+    public int getIdx() {
+        return idx;
     }
 }

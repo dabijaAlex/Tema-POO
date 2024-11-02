@@ -1,5 +1,6 @@
 package Game;
 
+import Game.Commands.DebugCommands;
 import Game.Commands.StatsCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fileio.ActionsInput;
@@ -20,6 +21,8 @@ public class Match {
     private int playerTurn;
     private int whenNextTurn;
     private StatsCommands statsCommands;
+    private DebugCommands debugCommands;
+    private ActionsInput currentCommand;
 
     private int roundMana;
 
@@ -31,6 +34,7 @@ public class Match {
         roundMana = 1;
         whenNextTurn = 0;
         statsCommands = new StatsCommands();
+        debugCommands = new DebugCommands();
 
         board = new Board();
         gameOver = false;
@@ -49,42 +53,19 @@ public class Match {
         int counter = 0;
 
         for (ActionsInput command : commands) {
+            this.currentCommand = command;
             switch (command.getCommand()) {
 
 
 
                 case "getPlayerDeck" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("playerIdx", command.getPlayerIdx());
-                    if (command.getPlayerIdx() == 1) {
-
-                        objectNode.putPOJO("output", player1.getDeck());
-                    } else {
-                        objectNode.putPOJO("output", player2.getDeck());
-                    }
-                    output.add(objectNode);
+                    this.debugCommands.getPlayerDeck(this, output);
                 }
                 case "getPlayerHero" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("playerIdx", command.getPlayerIdx());
-                    Hero x;
-                    if (command.getPlayerIdx() == 1) {
-                        x = player1.getHero();
-                    } else {
-                        x = player2.getHero();
-                    }
-
-                    objectNode.putPOJO("output", new Hero(x));
-                    output.add(objectNode);
-
+                    this.debugCommands.getPlayerHero(this, output);
                 }
                 case "getPlayerTurn" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("output", playerTurn);
-                    output.add(objectNode);
+                    this.debugCommands.getPlayerTurn(this.playerTurn, output);
                 }
                 case "endPlayerTurn" -> {
                     this.endPlayerTurn();
@@ -120,56 +101,19 @@ public class Match {
 
                 }
                 case "getCardsInHand" -> {
-                    Player player;
-                    if (command.getPlayerIdx() == 1) {
-                        player = player1;
-                    } else {
-                        player = player2;
-                    }
-//                    System.out.println("player idx = " + command.getPlayerIdx());
-
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("playerIdx", command.getPlayerIdx());
-                    objectNode.putPOJO("output", player.getHandCardsCopy());
-                    output.add(objectNode);
-
+                    this.debugCommands.getCardsInHand(this, output);
                 }
                 case "getPlayerMana" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("playerIdx", command.getPlayerIdx());
-                    if (command.getPlayerIdx() == 1) {
-                        objectNode.put("output", player1.getAvailableMana());
-                    } else {
-                        objectNode.put("output", player2.getAvailableMana());
-                    }
-                    output.add(objectNode);
+                    this.debugCommands.getPlayerMana(this, output);
                 }
                 case "getCardsOnTable" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.putPOJO("output", board.getCardsOnTable_copy());
-                    output.add(objectNode);
+                    this.debugCommands.getCardsOnTable(this.board, output);
                 }
                 case "cardUsesAttack" -> {
                     attackCard(counter, command.getCardAttacker(), command.getCardAttacked(), getPlayerTurn(), this.board, command, mapper, output);
                 }
                 case "getCardAtPosition" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("x", command.getX());
-                    objectNode.put("y", command.getY());
-                    Coordinates coordinates = new Coordinates();
-                    coordinates.setX(command.getX());
-                    coordinates.setY(command.getY());
-                    Minion minion = board.getMinionFromBoard(coordinates);
-                    if (minion == null)
-                        objectNode.put("output", "No card available at that position.");
-                    else {
-                        objectNode.putPOJO("output", new Minion(minion));
-                    }
-                    output.add(objectNode);
+                    this.debugCommands.getCardAtPosition(command, output, this.board);
                 }
                 case "cardUsesAbility" -> {
                     useAbility(counter, command.getCardAttacker(), command.getCardAttacked(), getPlayerTurn(), this.board, command, mapper, output);
@@ -193,10 +137,7 @@ public class Match {
                     useHeroAbility(counter, getPlayerTurn(), this.board, command, mapper, output);
                 }
                 case "getFrozenCardsOnTable" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.putPOJO("output", board.getFrozenMinions());
-                    output.add(objectNode);
+                    this.debugCommands.getFrozenCardsOnTable(this.board, output);
                 }
                 case "getPlayerOneWins" -> {
                     this.statsCommands.getPlayerOneWins(command, output);
@@ -536,6 +477,25 @@ public class Match {
         if (this.playerTurn == 2) {
             return player1;
         }
+        return player2;
+    }
+
+    public ActionsInput getCurrentCommand() {
+        return currentCommand;
+    }
+
+    public Player getPlayerByIdx(int idx) {
+        if(idx == 1)
+            return player1;
+        else
+            return player2;
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
         return player2;
     }
 

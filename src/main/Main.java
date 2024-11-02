@@ -75,6 +75,8 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
+        System.out.println("start test\n\n");
+
         GameLoop game = new GameLoop(inputData, output, objectMapper);
 
 

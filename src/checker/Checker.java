@@ -104,6 +104,7 @@ public final class Checker {
      * @return the score of that test
      */
     public static int calculateScore(final String input) {
+
         if (checkOutput(input)) {
             System.out.print(input + " ");
             for (int i = 1;  i <= CheckerConstants.LEN_LONGEST_TEST_NAME - input.length(); i++) {

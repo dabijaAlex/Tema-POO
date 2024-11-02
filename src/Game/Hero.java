@@ -9,9 +9,11 @@ public class Hero extends Card{
         this.setHealth(30);
     }
 
-
-    public void UseAbility() {
-        return;
+    public Hero(Hero other) {
+        super(other);
     }
 
+    public void useAbility(Board board, int row) {
+        System.out.println("aici ma");
+    }
 }

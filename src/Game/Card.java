@@ -1,8 +1,11 @@
 package Game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CardInput;
 
 import java.util.ArrayList;
+
+
 
 public class Card {
     private int mana;
@@ -10,6 +13,11 @@ public class Card {
     private String description;
     private ArrayList<String> colors;
     private String name;
+
+    @JsonIgnore
+    private boolean hasAttacked;
+    @JsonIgnore
+    private boolean hasUsedAbility;
 
 
 
@@ -21,18 +29,46 @@ public class Card {
         this.health = cardInput.getHealth();
     }
 
+    public Card(Card other){
+        this.mana = other.mana;
+        this.description = other.description;
+        this.colors = other.colors;
+        this.name = other.name;
+        this.health = other.health;
+        this.hasAttacked = false;
+        this.hasUsedAbility = false;
+    }
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "name='" + name + '\'' +
+                ", colors=" + colors +
+                ", mana=" + mana +
+                ", health=" + health +
+                ", description='" + description + '\'' +
+                '}';
+    }
 
+    public void useAbility(Minion minion) {
 
+    }
 
+    public boolean isHasUsedAbility() {
+        return hasUsedAbility;
+    }
 
+    public void setHasUsedAbility(boolean hasUsedAbility) {
+        this.hasUsedAbility = hasUsedAbility;
+    }
 
+    public boolean isHasAttacked() {
+        return hasAttacked;
+    }
 
-
-
-
-
-
+    public void setHasAttacked(boolean hasAttacked) {
+        this.hasAttacked = hasAttacked;
+    }
 
     public ArrayList<String> getColors() {
         return colors;

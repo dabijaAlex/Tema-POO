@@ -1,5 +1,6 @@
 package Game;
 
+import Game.Commands.StatsCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fileio.ActionsInput;
 import fileio.Coordinates;
@@ -18,9 +19,9 @@ public class Match {
     private Player player2;
     private int playerTurn;
     private int whenNextTurn;
+    private StatsCommands statsCommands;
 
     private int roundMana;
-    private int roundNumber;
 
     private boolean gameOver;
 
@@ -29,17 +30,18 @@ public class Match {
         playerTurn = current_game.getStartGame().getStartingPlayer();
         roundMana = 1;
         whenNextTurn = 0;
-        roundNumber = 0;
+        statsCommands = new StatsCommands();
+
         board = new Board();
         gameOver = false;
 
-//        Hero hero = new Hero(current_game.getStartGame().getPlayerOneHero());
         player1 = new Player(1, input.getPlayerOneDecks(), current_game.getStartGame().getPlayerOneDeckIdx(), current_game);
 
-//        hero = new Hero(current_game.getStartGame().getPlayerTwoHero());
         player2 = new Player(2, input.getPlayerTwoDecks(), current_game.getStartGame().getPlayerTwoDeckIdx(), current_game);
 
         this.PlayRound();
+
+
 
 
         ArrayList<ActionsInput> commands = current_game.getActions();
@@ -47,9 +49,6 @@ public class Match {
         int counter = 0;
 
         for (ActionsInput command : commands) {
-            counter++;
-//            if(gameOver)
-//                break;
             switch (command.getCommand()) {
 
 
@@ -200,22 +199,13 @@ public class Match {
                     output.add(objectNode);
                 }
                 case "getPlayerOneWins" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("output", Stats.playerOneWins);
-                    output.add(objectNode);
+                    this.statsCommands.getPlayerOneWins(command, output);
                 }
                 case "getPlayerTwoWins" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("output", Stats.playerTwoWins);
-                    output.add(objectNode);
+                    this.statsCommands.getPlayerTwoWins(command, output);
                 }
                 case "getTotalGamesPlayed" -> {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    objectNode.put("command", command.getCommand());
-                    objectNode.put("output", Stats.totalGamesPlayed);
-                    output.add(objectNode);
+                    this.statsCommands.getTotalGamesPlayed(command, output);
                 }
                 default -> {
                     break;
@@ -533,7 +523,6 @@ public class Match {
         if(this.roundMana < 10) {
             this.roundMana++;
         }
-        roundNumber++;
     }
 
     private Player getCurrentPlayer() {

@@ -5,17 +5,17 @@ import Game.Minion;
 import fileio.CardInput;
 
 public class Disciple extends Minion {
-    public Disciple(CardInput card) {
+    public Disciple(final CardInput card) {
         super(card);
     }
 
     @Override
-    public boolean placeCard(Board board, int player) {
+    public boolean placeCard(final Board board, final int player) {
         return super.placeCard(board, player);
     }
 
     @Override
-    public void useAbility(Minion minion) {
+    public void useAbility(final Minion minion) {
         minion.setHealth(minion.getHealth() + 2);
     }
 }

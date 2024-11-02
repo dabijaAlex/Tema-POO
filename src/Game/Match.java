@@ -124,47 +124,6 @@ public class Match {
 
 
     }
-
-    private void useHeroAbility(int counter, int currentPlayer, Board board,
-                            ActionsInput command, ObjectMapper maasdpper, ArrayNode output) {
-        int row = command.getAffectedRow();
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("command", command.getCommand());
-        objectNode.put("affectedRow", command.getAffectedRow());
-        if(getCurrentPlayer().getHero().getMana() > getCurrentPlayer().getAvailableMana()) {
-            objectNode.put("error", "Not enough mana to use hero's ability.");
-            output.add(objectNode);
-            return;
-        }
-        if(getCurrentPlayer().getHero().isHasUsedAbility()) {
-            objectNode.put("error", "Hero has already attacked this turn.");
-            output.add(objectNode);
-            return;
-        }
-        boolean isRowAlly = ((currentPlayer == 1 && (row == 2 || row == 3)) ||
-                (currentPlayer == 2 && (row == 0 || row == 1))) &&
-                (getCurrentPlayer().getHero().getName().equals("Lord Royce") ||
-                        getCurrentPlayer().getHero().getName().equals("Empress Thorina"));
-        if(isRowAlly) {
-            objectNode.put("error", "Selected row does not belong to the enemy.");
-            output.add(objectNode);
-            return;
-        }
-        boolean isRowEnemy = ((currentPlayer == 2 && (row == 2 || row == 3)) ||
-                (currentPlayer == 1 && (row == 0 || row == 1))) &&
-                ((getCurrentPlayer().getHero().getName().equals("King Mudface") ||
-                getCurrentPlayer().getHero().getName().equals("General Kocioraw")));
-        if(isRowEnemy) {
-            objectNode.put("error", "Selected row does not belong to the current player.");
-            output.add(objectNode);
-            return;
-        }
-        getCurrentPlayer().getHero().useAbility(board, row);
-        getCurrentPlayer().setAvailableMana(getCurrentPlayer().getAvailableMana() - getCurrentPlayer().getHero().getMana());
-        getCurrentPlayer().getHero().setHasUsedAbility(true);
-
-    }
 //    Reset has attacked on round end
 
     public void endPlayerTurn() {

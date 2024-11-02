@@ -5,17 +5,17 @@ import Game.Minion;
 import fileio.CardInput;
 
 public class Miraj extends Minion {
-    public Miraj(CardInput card) {
+    public Miraj(final CardInput card) {
         super(card);
     }
 
     @Override
-    public boolean placeCard(Board board, int player) {
+    public boolean placeCard(final Board board, final int player) {
         return board.addToRow(this, 3 - player);
     }
 
     @Override
-    public void useAbility(Minion minion){
+    public void useAbility(final Minion minion){
         int aux = minion.getHealth();
         minion.setHealth(this.getHealth());
         this.setHealth(aux);

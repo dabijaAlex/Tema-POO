@@ -21,9 +21,13 @@ public class GameLoop {
     private ArrayList<GameInput> games;
 
     public GameLoop(Input input, ArrayNode output, ObjectMapper mapper) {
+        Stats.initStats();
+
         games = input.getGames();
         for (GameInput current_game : games) {
+            Stats.totalGamesPlayed ++;
             Match meci= new Match(input, output, current_game, mapper);
+            System.out.println("x = " + Stats.totalGamesPlayed);
         }
 
     }

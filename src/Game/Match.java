@@ -180,9 +180,13 @@ public class Match {
                     gameOver = useAttackHero(getEnemyPlayer().getHero(), command.getCardAttacker(), board, command, mapper, output, getPlayerTurn());
                     if(gameOver) {
                         ObjectNode objectNode = mapper.createObjectNode();
-                        if(getPlayerTurn() == 1)
+                        if(getPlayerTurn() == 1) {
                             objectNode.put("gameEnded", "Player one killed the enemy hero.");
-                        else objectNode.put("gameEnded", "Player two killed the enemy hero.");
+                            Stats.playerOneWins++;
+                        } else {
+                            objectNode.put("gameEnded", "Player two killed the enemy hero.");
+                            Stats.playerTwoWins++;
+                        }
                         output.add(objectNode);
                     }
                 }
@@ -193,6 +197,24 @@ public class Match {
                     ObjectNode objectNode = mapper.createObjectNode();
                     objectNode.put("command", command.getCommand());
                     objectNode.putPOJO("output", board.getFrozenMinions());
+                    output.add(objectNode);
+                }
+                case "getPlayerOneWins" -> {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("command", command.getCommand());
+                    objectNode.put("output", Stats.playerOneWins);
+                    output.add(objectNode);
+                }
+                case "getPlayerTwoWins" -> {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("command", command.getCommand());
+                    objectNode.put("output", Stats.playerTwoWins);
+                    output.add(objectNode);
+                }
+                case "getTotalGamesPlayed" -> {
+                    ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("command", command.getCommand());
+                    objectNode.put("output", Stats.totalGamesPlayed);
                     output.add(objectNode);
                 }
                 default -> {

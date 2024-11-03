@@ -5,14 +5,13 @@ import Game.Minion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CardInput;
 
-public class Tank extends Minion {
-    public Tank(CardInput card) {
+public final class Tank extends Minion {
+    public Tank(final CardInput card) {
         super(card);
     }
 
-
     @Override
-    public boolean placeCard(Board board, int player) {
+    public boolean placeCard(final Board board, final int player) {
         return board.addToRow(this, 3 - player);
     }
 

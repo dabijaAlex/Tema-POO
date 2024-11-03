@@ -32,7 +32,7 @@ public class Match {
     private boolean gameOver;
 
 
-    public Match(Input input, ArrayNode output, GameInput current_game, ObjectMapper mapper) {
+    public Match(Input input, ArrayNode output, GameInput current_game) {
         playerTurn = current_game.getStartGame().getStartingPlayer();
         roundMana = 1;
         whenNextTurn = 0;

@@ -11,7 +11,7 @@ public final class StatsCommands {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", command.getCommand());
-        objectNode.put("output", Stats.playerOneWins);
+        objectNode.put("output", Stats.getPlayerOneWins());
         output.add(objectNode);
     }
 
@@ -19,7 +19,7 @@ public final class StatsCommands {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", command.getCommand());
-        objectNode.put("output", Stats.playerTwoWins);
+        objectNode.put("output", Stats.getPlayerTwoWins());
         output.add(objectNode);
     }
 
@@ -27,7 +27,7 @@ public final class StatsCommands {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", command.getCommand());
-        objectNode.put("output", Stats.totalGamesPlayed);
+        objectNode.put("output", Stats.getTotalGamesPlayed());
         output.add(objectNode);
     }
 }

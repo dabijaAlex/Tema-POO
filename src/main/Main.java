@@ -5,10 +5,7 @@ import checker.Checker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import checker.CheckerConstants;
-import fileio.ActionsInput;
-import fileio.GameInput;
 import fileio.Input;
 
 import Game.GameLoop;
@@ -18,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -75,9 +71,7 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
-        System.out.println("start test\n\n");
-
-        GameLoop game = new GameLoop(inputData, output, objectMapper);
+        GameLoop game = new GameLoop(inputData, output);
 
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();

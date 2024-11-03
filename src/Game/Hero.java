@@ -14,6 +14,5 @@ public class Hero extends Card{
     }
 
     public void useAbility(Board board, int row) {
-        System.out.println("aici ma");
     }
 }

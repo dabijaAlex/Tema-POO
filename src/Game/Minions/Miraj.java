@@ -4,7 +4,7 @@ import Game.Board;
 import Game.Minion;
 import fileio.CardInput;
 
-public class Miraj extends Minion {
+public final class Miraj extends Minion {
     public Miraj(final CardInput card) {
         super(card);
     }

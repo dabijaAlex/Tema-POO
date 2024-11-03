@@ -4,7 +4,7 @@ import Game.Board;
 import Game.Minion;
 import fileio.CardInput;
 
-public class Disciple extends Minion {
+public final class Disciple extends Minion {
     public Disciple(final CardInput card) {
         super(card);
     }

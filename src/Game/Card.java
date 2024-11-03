@@ -2,26 +2,31 @@ package Game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CardInput;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 
 
 
 public class Card {
+    @Getter @Setter
     private int mana;
+    @Getter @Setter
     private int health;
+    @Getter @Setter
     private String description;
+    @Getter @Setter
     private ArrayList<String> colors;
+    @Getter @Setter
     private String name;
 
-    @JsonIgnore
+    @Getter @Setter @JsonIgnore
     private boolean hasAttacked;
-    @JsonIgnore
+    @Getter @Setter @JsonIgnore
     private boolean hasUsedAbility;
 
-
-
-    public Card(CardInput cardInput) {
+    public Card(final CardInput cardInput) {
         this.mana = cardInput.getMana();
         this.description = cardInput.getDescription();
         this.colors = cardInput.getColors();
@@ -29,7 +34,7 @@ public class Card {
         this.health = cardInput.getHealth();
     }
 
-    public Card(Card other){
+    public Card(final Card other) {
         this.mana = other.mana;
         this.description = other.description;
         this.colors = other.colors;
@@ -39,74 +44,7 @@ public class Card {
         this.hasUsedAbility = false;
     }
 
-    @Override
-    public String toString() {
-        return "Card{" +
-                "name='" + name + '\'' +
-                ", colors=" + colors +
-                ", mana=" + mana +
-                ", health=" + health +
-                ", description='" + description + '\'' +
-                '}';
-    }
+    public void useAbility(final Minion minion) {
 
-    public void useAbility(Minion minion) {
-
-    }
-
-    public boolean isHasUsedAbility() {
-        return hasUsedAbility;
-    }
-
-    public void setHasUsedAbility(boolean hasUsedAbility) {
-        this.hasUsedAbility = hasUsedAbility;
-    }
-
-    public boolean isHasAttacked() {
-        return hasAttacked;
-    }
-
-    public void setHasAttacked(boolean hasAttacked) {
-        this.hasAttacked = hasAttacked;
-    }
-
-    public ArrayList<String> getColors() {
-        return colors;
-    }
-
-    public void setColors(ArrayList<String> colors) {
-        this.colors = colors;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public void setMana(int mana) {
-        this.mana = mana;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

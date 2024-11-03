@@ -1,19 +1,19 @@
 package Game;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fileio.GameInput;
 import fileio.Input;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.ArrayList;
 
-public class GameLoop {
+public final class GameLoop {
 
-    public GameLoop(Input input, ArrayNode output, ObjectMapper mapper) {
-        Stats.initStats();
+    public GameLoop(final Input input, final ArrayNode output) {
+        Stats.setTotalGamesPlayed(0);
+        Stats.setPlayerOneWins(0);
+        Stats.setPlayerTwoWins(0);
         ArrayList<GameInput> games = input.getGames();
         for (GameInput current_game : games) {
-            Stats.totalGamesPlayed ++;
-            Match match= new Match(input, output, current_game, mapper);
-            System.out.println("x = " + Stats.totalGamesPlayed);
+            Stats.setTotalGamesPlayed(Stats.getTotalGamesPlayed() + 1);
+            Match match = new Match(input, output, current_game);
         }
     }
 }

@@ -3,12 +3,10 @@ package Game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CardInput;
 
-
-public class Minion extends Card{
+public class Minion extends Card {
     private int attackDamage;
     @JsonIgnore
     private boolean frozen;
-
 
     public Minion(CardInput input) {
         super(input);
@@ -16,23 +14,21 @@ public class Minion extends Card{
         this.frozen = false;
     }
 
-    public boolean placeCard(Board board, int player){
+    public boolean placeCard(Board board, int player) {
         return board.addToRow(this, 3 - 3 * (player - 1));
     }
 
     @JsonIgnore
-    public boolean isTank(){
+    public boolean isTank() {
         return false;
     }
 
     public void useAttack(Minion defender, Board board) {
         defender.setHealth(defender.getHealth() - this.getAttackDamage());
-        if(defender.getHealth() <= 0){
+        if (defender.getHealth() <= 0) {
             board.removeMinionFromBoard(defender);
         }
     }
-
-
 
     public Minion(Minion other) {
         super(other);

@@ -1,20 +1,19 @@
-package Game;
+package game;
 
-import Game.Commands.DebugCommands;
-import Game.Commands.GameplayCommands;
-import Game.Commands.StatsCommands;
+import game.commands.DebugCommands;
+import game.commands.GameplayCommands;
+import game.commands.StatsCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fileio.ActionsInput;
-import fileio.Coordinates;
 import fileio.GameInput;
 import fileio.Input;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class Match {
+@Setter @Getter
+public final class Match {
 
     private Board board;
     private Player player1;
@@ -25,15 +24,22 @@ public class Match {
     private DebugCommands debugCommands;
     private GameplayCommands gameplayCommands;
     private ActionsInput currentCommand;
+    private final int maxManaPerRound = 10;
 
 
     private int roundMana;
 
     private boolean gameOver;
 
-
-    public Match(Input input, ArrayNode output, GameInput current_game) {
-        playerTurn = current_game.getStartGame().getStartingPlayer();
+    /**
+     *
+     * @param input
+     * @param output
+     * @param currentGame
+     */
+    public Match(final Input input, final ArrayNode output,
+                 final GameInput currentGame) {
+        playerTurn = currentGame.getStartGame().getStartingPlayer();
         roundMana = 1;
         whenNextTurn = 0;
         statsCommands = new StatsCommands();
@@ -44,25 +50,20 @@ public class Match {
         board = new Board();
         gameOver = false;
 
-        player1 = new Player(1, input.getPlayerOneDecks(), current_game.getStartGame().getPlayerOneDeckIdx(), current_game);
+        player1 = new Player(1, input.getPlayerOneDecks(),
+                currentGame.getStartGame().getPlayerOneDeckIdx(), currentGame);
 
-        player2 = new Player(2, input.getPlayerTwoDecks(), current_game.getStartGame().getPlayerTwoDeckIdx(), current_game);
+        player2 = new Player(2, input.getPlayerTwoDecks(),
+                currentGame.getStartGame().getPlayerTwoDeckIdx(), currentGame);
 
-        this.PlayRound();
+        this.playRound();
 
 
 
-
-        ArrayList<ActionsInput> commands = current_game.getActions();
-
-        int counter = 0;
-
+        ArrayList<ActionsInput> commands = currentGame.getActions();
         for (ActionsInput command : commands) {
             this.currentCommand = command;
             switch (command.getCommand()) {
-
-
-
                 case "getPlayerDeck" -> {
                     this.debugCommands.getPlayerDeck(this, output);
                 }
@@ -77,7 +78,6 @@ public class Match {
                 }
                 case "placeCard" -> {
                     this.gameplayCommands.placeCard(this, output);
-
                 }
                 case "getCardsInHand" -> {
                     this.debugCommands.getCardsInHand(this, output);
@@ -89,20 +89,25 @@ public class Match {
                     this.debugCommands.getCardsOnTable(this.board, output);
                 }
                 case "cardUsesAttack" -> {
-                    this.gameplayCommands.cardUsesAttack(this, output, command.getCardAttacker(), command.getCardAttacked(), this.getPlayerTurn());
+                    this.gameplayCommands.cardUsesAttack(this, output,
+                            command.getCardAttacker(), command.getCardAttacked(),
+                            this.getPlayerTurn());
                 }
                 case "getCardAtPosition" -> {
                     this.debugCommands.getCardAtPosition(command, output, this.board);
                 }
                 case "cardUsesAbility" -> {
-                    this.gameplayCommands.cardUsesAbility(this, output, command.getCardAttacker(), command.getCardAttacked(), this.getPlayerTurn());
+                    this.gameplayCommands.cardUsesAbility(this, output,
+                            command.getCardAttacker(), command.getCardAttacked(),
+                            this.getPlayerTurn());
                 }
                 case "useAttackHero" -> {
-                    this.gameplayCommands.useAttackHero(this, output, command.getCardAttacker(), this.getEnemyPlayer());
+                    this.gameplayCommands.useAttackHero(this, output,
+                            command.getCardAttacker(), this.getEnemyPlayer());
                 }
                 case "useHeroAbility" -> {
-//                    useHeroAbility(counter, getPlayerTurn(), this.board, command, mapper, output);
-                    this.gameplayCommands.useHeroAbility(this, output, this.getPlayerTurn());
+                    this.gameplayCommands.useHeroAbility(this, output,
+                            this.getPlayerTurn());
                 }
                 case "getFrozenCardsOnTable" -> {
                     this.debugCommands.getFrozenCardsOnTable(this.board, output);
@@ -121,19 +126,20 @@ public class Match {
                 }
             }
         }
-
-
     }
-//    Reset has attacked on round end
 
+
+    /**
+     *
+     */
     public void endPlayerTurn() {
         board.unfreeze(getPlayerTurn());
         this.whenNextTurn++;
         if (this.whenNextTurn == 2) {
             this.whenNextTurn = 0;
-            this.PlayRound();
+            this.playRound();
         }
-        if(this.playerTurn == 1) {
+        if (this.playerTurn == 1) {
             this.playerTurn = 2;
         } else {
             this.playerTurn = 1;
@@ -141,7 +147,10 @@ public class Match {
 
     }
 
-    public void PlayRound() {
+    /**
+     *
+     */
+    public void playRound() {
         this.player1.addManaToPlayer(this.roundMana);
         this.player2.addManaToPlayer(this.roundMana);
 
@@ -153,11 +162,15 @@ public class Match {
         this.player1.getHero().setHasUsedAbility(false);
         this.player2.getHero().setHasUsedAbility(false);
 
-        if(this.roundMana < 10) {
+        if (this.roundMana < maxManaPerRound) {
             this.roundMana++;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Player getCurrentPlayer() {
         if (this.playerTurn == 1) {
             return player1;
@@ -165,6 +178,10 @@ public class Match {
         return player2;
     }
 
+    /**
+     *
+     * @return
+     */
     public Player getEnemyPlayer() {
         if (this.playerTurn == 2) {
             return player1;
@@ -172,90 +189,17 @@ public class Match {
         return player2;
     }
 
-    public ActionsInput getCurrentCommand() {
-        return currentCommand;
-    }
 
-    public Player getPlayerByIdx(int idx) {
-        if(idx == 1)
+    /**
+     *
+     * @param idx
+     * @return
+     */
+    public Player getPlayerByIdx(final int idx) {
+        if (idx == 1) {
             return player1;
-        else
+        } else {
             return player2;
-    }
-
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public void setPlayerTurn(int playerTurn) {
-        this.playerTurn = playerTurn;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
-    public void setCurrentCommand(ActionsInput currentCommand) {
-        this.currentCommand = currentCommand;
-    }
-
-    public DebugCommands getDebugCommands() {
-        return debugCommands;
-    }
-
-    public void setDebugCommands(DebugCommands debugCommands) {
-        this.debugCommands = debugCommands;
-    }
-
-    public boolean isGameOver() {
-        return gameOver;
-    }
-
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
-    public int getRoundMana() {
-        return roundMana;
-    }
-
-    public void setRoundMana(int roundMana) {
-        this.roundMana = roundMana;
-    }
-
-    public StatsCommands getStatsCommands() {
-        return statsCommands;
-    }
-
-    public void setStatsCommands(StatsCommands statsCommands) {
-        this.statsCommands = statsCommands;
-    }
-
-    public int getWhenNextTurn() {
-        return whenNextTurn;
-    }
-
-    public void setWhenNextTurn(int whenNextTurn) {
-        this.whenNextTurn = whenNextTurn;
+        }
     }
 }

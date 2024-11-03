@@ -1,16 +1,25 @@
-package Game.Heroes;
+package game.heroes;
 
-import Game.Board;
-import Game.Hero;
-import Game.Minion;
+import game.Board;
+import game.Hero;
+import game.Minion;
 import fileio.CardInput;
 
 public final class EmpressThronia extends Hero {
 
+    /**
+     *
+     * @param hero
+     */
     public EmpressThronia(final CardInput hero) {
         super(hero);
     }
 
+    /**
+     *
+     * @param board
+     * @param row
+     */
     @Override
     public void useAbility(final Board board, final int row) {
         Minion toDestroy = null;

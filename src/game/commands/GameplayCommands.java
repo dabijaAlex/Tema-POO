@@ -1,17 +1,30 @@
-package Game.Commands;
-import Game.*;
+package game.commands;
+import game.Match;
+import game.Minion;
+import game.Player;
+
+import game.Stats;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.Coordinates;
 
 public final class GameplayCommands {
+    private final int p1FrontRow = 2;
+    private final int p2FrontRow = 1;
+    private final int p1BackRow = 3;
+    private final int p2BackRow = 0;
+
+    /**
+     *
+     * @param match
+     */
     public void endPlayerTurn(final Match match) {
         match.getBoard().unfreeze(match.getPlayerTurn());
         match.setWhenNextTurn(match.getWhenNextTurn() + 1);
         if (match.getWhenNextTurn() == 2) {
             match.setWhenNextTurn(0);
-            match.PlayRound();
+            match.playRound();
         }
         if (match.getPlayerTurn() == 1) {
             match.setPlayerTurn(2);
@@ -20,6 +33,11 @@ public final class GameplayCommands {
         }
     }
 
+    /**
+     *
+     * @param match
+     * @param output
+     */
     public void placeCard(final Match match, final ArrayNode output) {
         Minion minion;
         Player player = match.getPlayerByIdx(match.getPlayerTurn());
@@ -44,13 +62,21 @@ public final class GameplayCommands {
         player.subManaFromPlayer(minion.getMana());
     }
 
-    public void useAttackHero(final Match match, final ArrayNode output, final Coordinates attacker_coords, final Player attackedPlayer) {
+    /**
+     *
+     * @param match
+     * @param output
+     * @param attackerCoords
+     * @param attackedPlayer
+     */
+    public void useAttackHero(final Match match, final ArrayNode output,
+                              final Coordinates attackerCoords, final Player attackedPlayer) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", "useAttackHero");
-        objectNode.putPOJO("cardAttacker", attacker_coords);
+        objectNode.putPOJO("cardAttacker", attackerCoords);
 
-        Minion attacker = match.getBoard().getMinionFromBoard(attacker_coords);
+        Minion attacker = match.getBoard().getMinionFromBoard(attackerCoords);
 
         if (attacker.isFrozen()) {
             objectNode.put("error", "Attacker card is frozen.");
@@ -68,12 +94,13 @@ public final class GameplayCommands {
             output.add(objectNode);
             return;
         }
-        attackedPlayer.getHero().setHealth(attackedPlayer.getHero().getHealth() - attacker.getAttackDamage());
+        attackedPlayer.getHero().setHealth(attackedPlayer.getHero().getHealth()
+                - attacker.getAttackDamage());
         attacker.setHasAttacked(true);
         attacker.setHasUsedAbility(true);
-        if (attackedPlayer.getHero().getHealth() <= 0)
+        if (attackedPlayer.getHero().getHealth() <= 0) {
             match.setGameOver(true);
-
+        }
         if (match.isGameOver()) {
             objectNode = mapper.createObjectNode();
             if (match.getPlayerTurn() == 1) {
@@ -87,32 +114,46 @@ public final class GameplayCommands {
         }
     }
 
-    public void cardUsesAttack(final Match match, final ArrayNode output, final Coordinates attacker_coords, final Coordinates defender_coords, final int attacker_idx) {
+    /**
+     *
+     * @param match
+     * @param output
+     * @param attackerCoords
+     * @param defenderCoords
+     * @param attackerIdx
+     */
+    public void cardUsesAttack(final Match match, final ArrayNode output,
+                               final Coordinates attackerCoords, final Coordinates defenderCoords,
+                               final int attackerIdx) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", "cardUsesAttack");
-        objectNode.putPOJO("cardAttacker", attacker_coords);
-        objectNode.putPOJO("cardAttacked", defender_coords);
+        objectNode.putPOJO("cardAttacker", attackerCoords);
+        objectNode.putPOJO("cardAttacked", defenderCoords);
 
-        boolean isAllyCard = (attacker_idx == 2 && (defender_coords.getX() == 0 || defender_coords.getX() == 1)) || (attacker_idx == 1 && (defender_coords.getX() == 2 || defender_coords.getX() == 3));
+        boolean isAllyCard = (attackerIdx == 2
+                && (defenderCoords.getX() == p2BackRow || defenderCoords.getX() == p2FrontRow))
+                || (attackerIdx == 1
+                && (defenderCoords.getX() == p1FrontRow || defenderCoords.getX() == p1BackRow));
         if (isAllyCard) {
             objectNode.put("error", "Attacked card does not belong to the enemy.");
             output.add(objectNode);
             return;
         }
 
-        Minion tank = match.getBoard().isTankInRow(attacker_idx);
+        Minion tank = match.getBoard().isTankInRow(attackerIdx);
 
-        Minion defender = match.getBoard().getMinionFromBoard(defender_coords);
-        Minion attacker = match.getBoard().getMinionFromBoard(attacker_coords);
+        Minion defender = match.getBoard().getMinionFromBoard(defenderCoords);
+        Minion attacker = match.getBoard().getMinionFromBoard(attackerCoords);
 
         if (attacker.isHasAttacked()) {
             objectNode.put("error", "Attacker card has already attacked this turn.");
             output.add(objectNode);
             return;
         }
-        if (defender == null)
+        if (defender == null) {
             return;
+        }
         if (tank != null && !defender.isTank()) {
             objectNode.put("error", "Attacked card is not of type 'Tank'.");
             output.add(objectNode);
@@ -123,17 +164,27 @@ public final class GameplayCommands {
         attacker.setHasUsedAbility(true);
     }
 
-    public void cardUsesAbility(final Match match, final ArrayNode output, final Coordinates attacker_coords, final Coordinates defender_coords, final int attacker_idx) {
+    /**
+     *
+     * @param match
+     * @param output
+     * @param attackerCoords
+     * @param defenderCoords
+     * @param attackerIdx
+     */
+    public void cardUsesAbility(final Match match, final ArrayNode output,
+                                final Coordinates attackerCoords, final Coordinates defenderCoords,
+                                final int attackerIdx) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", "cardUsesAbility");
-        objectNode.putPOJO("cardAttacker", attacker_coords);
-        objectNode.putPOJO("cardAttacked", defender_coords);
+        objectNode.putPOJO("cardAttacker", attackerCoords);
+        objectNode.putPOJO("cardAttacked", defenderCoords);
 
-        Minion tank = match.getBoard().isTankInRow(attacker_idx);
+        Minion tank = match.getBoard().isTankInRow(attackerIdx);
 
-        Minion defender = match.getBoard().getMinionFromBoard(defender_coords);
-        Minion attacker = match.getBoard().getMinionFromBoard(attacker_coords);
+        Minion defender = match.getBoard().getMinionFromBoard(defenderCoords);
+        Minion attacker = match.getBoard().getMinionFromBoard(attackerCoords);
 
         if (attacker.isFrozen()) {
             objectNode.put("error", "Attacker card is frozen.");
@@ -147,14 +198,20 @@ public final class GameplayCommands {
             return;
         }
         if (attacker.getName().equals("Disciple")) {
-            boolean isEnemyCard = (match.getPlayerTurn() == 1 && (defender_coords.getX() < 2)) || (match.getPlayerTurn() == 2 && (defender_coords.getX() >= 2));
+            boolean isEnemyCard = (match.getPlayerTurn() == 1
+                    && (defenderCoords.getX() < p1FrontRow))
+                    || (match.getPlayerTurn() == 2
+                    && (defenderCoords.getX() >= p1FrontRow));
             if (isEnemyCard) {
                 objectNode.put("error", "Attacked card does not belong to the current player.");
                 output.add(objectNode);
                 return;
             }
         } else {
-            boolean isAllyCard = (attacker_idx == 1 && (defender_coords.getX() == 2 || defender_coords.getX() == 3)) || (attacker_idx == 2 && (defender_coords.getX() == 0 || defender_coords.getX() == 1));
+            boolean isAllyCard = (attackerIdx == 1 && (defenderCoords.getX() == p1FrontRow
+                    || defenderCoords.getX() == p1BackRow))
+                    || (attackerIdx == 2 && (defenderCoords.getX() == p2BackRow
+                    || defenderCoords.getX() == p2FrontRow));
             if (isAllyCard) {
                 objectNode.put("error", "Attacked card does not belong to the enemy.");
                 output.add(objectNode);
@@ -170,12 +227,19 @@ public final class GameplayCommands {
         attacker.useAbility(defender);
         attacker.setHasAttacked(true);
         attacker.setHasUsedAbility(true);
-        if (defender.getHealth() <= 0)
+        if (defender.getHealth() <= 0) {
             match.getBoard().removeMinionFromBoard(defender);
+        }
     }
 
-    public void useHeroAbility(final Match match, ArrayNode output,
-                               final int attacker_idx) {
+    /**
+     *
+     * @param match
+     * @param output
+     * @param attackerIdx
+     */
+    public void useHeroAbility(final Match match, final ArrayNode output,
+                               final int attackerIdx) {
         int row = match.getCurrentCommand().getAffectedRow();
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
@@ -192,8 +256,8 @@ public final class GameplayCommands {
             output.add(objectNode);
             return;
         }
-        boolean isRowAlly = ((attacker_idx == 1 && (row == 2 || row == 3))
-                || (attacker_idx == 2 && (row == 0 || row == 1)))
+        boolean isRowAlly = ((attackerIdx == 1 && (row == p1FrontRow || row == p1BackRow))
+                || (attackerIdx == 2 && (row == p2BackRow || row == p2FrontRow)))
                 && (player.getHero().getName().equals("Lord Royce")
                 || player.getHero().getName().equals("Empress Thorina"));
         if (isRowAlly) {
@@ -201,10 +265,10 @@ public final class GameplayCommands {
             output.add(objectNode);
             return;
         }
-        boolean isRowEnemy = ((attacker_idx == 2 && (row == 2 || row == 3)) ||
-                (attacker_idx == 1 && (row == 0 || row == 1))) &&
-                ((player.getHero().getName().equals("King Mudface") ||
-                        player.getHero().getName().equals("General Kocioraw")));
+        boolean isRowEnemy = ((attackerIdx == 2 && (row == p1FrontRow || row == p1BackRow))
+                || (attackerIdx == 1 && (row == p2BackRow || row == p2FrontRow)))
+                && ((player.getHero().getName().equals("King Mudface")
+                || player.getHero().getName().equals("General Kocioraw")));
         if (isRowEnemy) {
             objectNode.put("error", "Selected row does not belong to the current player.");
             output.add(objectNode);

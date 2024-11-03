@@ -1,4 +1,4 @@
-package Game;
+package game;
 import fileio.GameInput;
 import fileio.Input;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public final class GameLoop {
 
+    /**
+     *
+     * @param input
+     * @param output
+     */
     public GameLoop(final Input input, final ArrayNode output) {
         Stats.setTotalGamesPlayed(0);
         Stats.setPlayerOneWins(0);

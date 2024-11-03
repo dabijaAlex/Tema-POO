@@ -1,15 +1,24 @@
-package Game.Heroes;
+package game.heroes;
 
-import Game.Hero;
-import Game.Board;
-import Game.Minion;
+import game.Hero;
+import game.Board;
+import game.Minion;
 import fileio.CardInput;
 
 public final class KingMudface extends Hero {
+    /**
+     *
+     * @param hero
+     */
     public KingMudface(final CardInput hero) {
         super(hero);
     }
 
+    /**
+     *
+     * @param board
+     * @param row
+     */
     @Override
     public void useAbility(final Board board, final int row) {
         for (Minion minion : board.getBoard().get(row)) {

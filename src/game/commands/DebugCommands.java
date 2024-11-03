@@ -1,17 +1,22 @@
-package Game.Commands;
+package game.commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.ActionsInput;
 import fileio.Coordinates;
-import Game.Match;
-import Game.Player;
-import Game.Board;
-import Game.Minion;
+import game.Match;
+import game.Player;
+import game.Board;
+import game.Minion;
 
 public final class DebugCommands {
 
+    /**
+     *
+     * @param match
+     * @param output
+     */
     public void getCardsInHand(final Match match, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         Player player = match.getPlayerByIdx(match.getCurrentCommand().getPlayerIdx());
@@ -22,6 +27,11 @@ public final class DebugCommands {
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param match
+     * @param output
+     */
     public void getPlayerDeck(final Match match, final ArrayNode output) {
         Player player = match.getPlayerByIdx(match.getCurrentCommand().getPlayerIdx());
         ObjectMapper mapper = new ObjectMapper();
@@ -32,6 +42,11 @@ public final class DebugCommands {
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param match
+     * @param output
+     */
     public void getPlayerHero(final Match match, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         Player player = match.getPlayerByIdx(match.getCurrentCommand().getPlayerIdx());
@@ -42,14 +57,24 @@ public final class DebugCommands {
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param board
+     * @param output
+     */
     public void getCardsOnTable(final Board board, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", "getCardsOnTable");
-        objectNode.putPOJO("output", board.getCardsOnTable_copy());
+        objectNode.putPOJO("output", board.getCardsOnTableCopy());
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param playerTurn
+     * @param output
+     */
     public void getPlayerTurn(final int playerTurn, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
@@ -58,7 +83,14 @@ public final class DebugCommands {
         output.add(objectNode);
     }
 
-    public void getCardAtPosition(final ActionsInput command, final ArrayNode output, final Board board) {
+    /**
+     *
+     * @param command
+     * @param output
+     * @param board
+     */
+    public void getCardAtPosition(final ActionsInput command, final ArrayNode output,
+                                  final Board board) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("command", command.getCommand());
@@ -68,14 +100,19 @@ public final class DebugCommands {
         coordinates.setX(command.getX());
         coordinates.setY(command.getY());
         Minion minion = board.getMinionFromBoard(coordinates);
-        if (minion == null)
+        if (minion == null) {
             objectNode.put("output", "No card available at that position.");
-        else {
+        } else {
             objectNode.putPOJO("output", new Minion(minion));
         }
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param match
+     * @param output
+     */
     public void getPlayerMana(final Match match, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         Player player = match.getPlayerByIdx(match.getCurrentCommand().getPlayerIdx());
@@ -86,6 +123,11 @@ public final class DebugCommands {
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param board
+     * @param output
+     */
     public void getFrozenCardsOnTable(final Board board, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();

@@ -1,5 +1,5 @@
-package Game.Commands;
-import Game.Stats;
+package game.commands;
+import game.Stats;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -7,6 +7,11 @@ import fileio.ActionsInput;
 
 public final class StatsCommands {
 
+    /**
+     *
+     * @param command
+     * @param output
+     */
     public void getPlayerOneWins(final ActionsInput command, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
@@ -15,6 +20,11 @@ public final class StatsCommands {
         output.add(objectNode);
     }
 
+    /**
+     *
+     * @param command
+     * @param output
+     */
     public void getPlayerTwoWins(final ActionsInput command, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
@@ -23,6 +33,11 @@ public final class StatsCommands {
         output.add(objectNode);
     }
 
+    /**
+     * 
+     * @param command
+     * @param output
+     */
     public void getTotalGamesPlayed(final ActionsInput command, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();

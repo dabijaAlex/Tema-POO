@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fileio.CardInput;
@@ -26,6 +26,10 @@ public class Card {
     @Getter @Setter @JsonIgnore
     private boolean hasUsedAbility;
 
+    /**
+     *
+     * @param cardInput
+     */
     public Card(final CardInput cardInput) {
         this.mana = cardInput.getMana();
         this.description = cardInput.getDescription();
@@ -34,6 +38,10 @@ public class Card {
         this.health = cardInput.getHealth();
     }
 
+    /**
+     *
+     * @param other
+     */
     public Card(final Card other) {
         this.mana = other.mana;
         this.description = other.description;
@@ -44,6 +52,10 @@ public class Card {
         this.hasUsedAbility = false;
     }
 
+    /**
+     *
+     * @param minion
+     */
     public void useAbility(final Minion minion) {
 
     }

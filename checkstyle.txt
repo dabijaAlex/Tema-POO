@@ -1,5 +1,13 @@
 Starting audit...
-[ERROR] C:\Users\stefa\Desktop\POO\Tema\tema\.\src\game\commands\StatsCommands.java:37: Line has trailing spaces. [RegexpSingleline]
-[ERROR] C:\Users\stefa\Desktop\POO\Tema\tema\.\src\game\GameLoop.java:19:24: Name 'current_game' must match pattern '^[a-z][a-zA-Z0-9]*$'. [LocalVariableName]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\game\commands\StatsCommands.java:37: Line has trailing spaces. [RegexpSingleline]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\game\GameLoop.java:19:24: Name 'current_game' must match pattern '^([a-z][a-zA-Z0-9]*|_)$'. [LocalVariableName]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\fileio\DecksInput.java:4:1: Redundant import from the same package - org.poo.fileio.CardInput. [RedundantImport]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\fileio\GameInput.java:3:1: Redundant import from the same package - org.poo.fileio.ActionsInput. [RedundantImport]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\fileio\GameInput.java:4:1: Redundant import from the same package - org.poo.fileio.StartGameInput. [RedundantImport]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\fileio\Input.java:4:1: Redundant import from the same package - org.poo.fileio.*. [RedundantImport]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\fileio\Input.java:4:22: Using the '.*' form of import should be avoided - org.poo.fileio.*. [AvoidStarImport]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\game\commands\StatsCommands.java:37: Line has trailing spaces. [RegexpSingleline]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\game\GameLoop.java:19:24: Name 'current_game' must match pattern '^([a-z][a-zA-Z0-9]*|_)$'. [LocalVariableName]
+[ERROR] C:\Users\stefa\Desktop\old\Tema-POO\.\src\main\java\org\poo\game\Player.java:12:28: Using the '.*' form of import should be avoided - org.poo.game.minions.*. [AvoidStarImport]
 Audit done.
-Checkstyle ends with 2 errors.
+Checkstyle ends with 10 errors.
